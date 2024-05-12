@@ -89,8 +89,8 @@ document.querySelector('.btn').addEventListener('click', () => {
     }
   }).then(res => {
     myAlert(true, '登录成功')
-    // localStorage.setItem('token', res.data.token)
-    // location.href = '../content/index.html'
+    localStorage.setItem('token', res.data.token)
+    location.href = '../content/index.html'
   }).catch(error => {
     myAlert(false, error.response.data.message)
   })

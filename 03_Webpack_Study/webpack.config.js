@@ -10,13 +10,18 @@ const webpack = require('webpack')
 const config={
   // mode: 'development',
   //entry：入口修改处  __dirname:获取当前文件所在的文件夹的绝对路径 D:\BaiduNetdiskDownload\VSCode\VSCodeFile\03_Webpack_Study\src/login/index.js
-  entry: path.resolve(__dirname, 'src/login/index.js'),
+  // entry: path.resolve(__dirname, 'src/login/index.js'),
+  entry:{
+    'login':path.resolve(__dirname,'src/login/index.js'),
+    'content':path.resolve(__dirname,'src/content/index.js'),
+    'publish':path.resolve(__dirname,'src/publish/index.js'),
+  },
   //output:出口修改处
   output: {
     //path:是之将打包好的文件放在哪个文件夹下
     path: path.resolve(__dirname, 'dist'),
     //存放的位置是D:\BaiduNetdiskDownload\VSCode\VSCodeFile\03_Webpack_Study\dist\login\index.js
-    filename: './login/index.js',
+    filename: './[name]/index.js',
     clean: true //生成打包后内容之前，清空输出目录
   },
   //插件(给Webpack提供更多功能)
@@ -25,11 +30,26 @@ const config={
       template: path.resolve(__dirname,'public/login.html'), // 模板文件
       filename: path.resolve(__dirname,'dist/login/index.html'),// 输出文件
       // 自定义属性，在 html 模板中 <%=htmlWebpackPlugin.options.useCdn%> 访问使用
-      useCdn: process.env.NODE_ENV === 'production'
+      useCdn: process.env.NODE_ENV === 'production',
+      chunks:['login'] //影人哪些打包后的模块（和entry的key一致）
+    }),
+    new HtmlWebpackPlugin({
+      template: path.resolve(__dirname,'public/content.html'), // 模板文件
+      filename: path.resolve(__dirname,'dist/content/index.html'),// 输出文件
+      // 自定义属性，在 html 模板中 <%=htmlWebpackPlugin.options.useCdn%> 访问使用
+      useCdn: process.env.NODE_ENV === 'production',
+      chunks:['content'] //影人哪些打包后的模块（和entry的key一致）
+    }),
+    new HtmlWebpackPlugin({
+      template: path.resolve(__dirname,'publish/publish.html'), // 模板文件
+      filename: path.resolve(__dirname,'dist/publish/index.html'),// 输出文件
+      // 自定义属性，在 html 模板中 <%=htmlWebpackPlugin.options.useCdn%> 访问使用
+      useCdn: process.env.NODE_ENV === 'production',
+      chunks:['publish'] //影人哪些打包后的模块（和entry的key一致）
     }),
     new MiniCssExtractPlugin({
       //在MiniCssExtractPlugin插件是不能用绝对路径的，只能用相对路径
-      filename:'./login/index.css'
+      filename:'./[name]/index.css'
     }),
     new webpack.DefinePlugin({
       // key 是注入到打包后的前端 JS 代码中作为全局变量
@@ -93,7 +113,9 @@ if (process.env.NODE_ENV === 'production') {
     // key：import from 语句后面的字符串
     // value：留在原地的全局变量（最好和 cdn 在全局暴露的变量一致）
     'bootstrap/dist/css/bootstrap.min.css': 'bootstrap',
-    'axios': 'axios'
+    'axios': 'axios',
+    'form-serialize':'serialize',
+    '@wangeditor/editor':'wangeditor'
   }
 }
 module.exports = config
